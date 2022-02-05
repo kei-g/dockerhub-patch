@@ -1,0 +1,28 @@
+author: 'kei-g'
+branding:
+  color: 'blue'
+  icon: 'upload'
+description: 'Patches description and overview to DockerHub'
+inputs:
+  description:
+    description: Single-line description of your docker image
+    required: true
+  overview:
+    description: Full-text description of your docker image
+    required: true
+  password:
+    description: Your password on DockerHub
+    required: true
+  repo:
+    description: Repository name of your docker image
+    required: true
+  username:
+    description: Your name on DockerHub
+    required: true
+name: 'DockerHub Patcher'
+outputs:
+  response:
+    description: The response from DockerHub
+runs:
+  main: 'dist/bin/patch.js'
+  using: 'node12'

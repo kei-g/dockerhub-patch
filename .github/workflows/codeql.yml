@@ -1,0 +1,31 @@
+jobs:
+  analyze:
+    if: github.ref_type == 'branch'
+    name: Analyze
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - 'javascript'
+name: CodeQL
+on:
+  pull_request:
+  push:

@@ -1,0 +1,7 @@
+**/.*
+**/*.md
+**/*.yml
+**/coverage/
+**/src/
+**/test/
+**/tsconfig.json

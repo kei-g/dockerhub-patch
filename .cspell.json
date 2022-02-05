@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "words": [
+    "autobuild",
+    "codeql",
+    "dockerhub",
+    "errinfo",
+    "esbuild",
+    "invalidtestuser",
+    "linebreak",
+    "nopassword",
+    "outfile",
+    "postpublish",
+    "snowstep",
+    "tada",
+    "txnid"
+  ]
+}

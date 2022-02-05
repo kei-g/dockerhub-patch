@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "charset": "utf8",
+    "declaration": true,
+    "declarationDir": ".",
+    "downlevelIteration": true,
+    "emitBOM": false,
+    "emitDeclarationOnly": true,
+    "lib": [
+      "ESNext",
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "newLine": "lf",
+    "pretty": true,
+    "removeComments": false,
+    "strict": true,
+    "strictNullChecks": false,
+    "target": "ES2015",
+  },
+  "exclude": [
+    "src/bin",
+  ],
+  "include": [
+    "src",
+  ],
+}

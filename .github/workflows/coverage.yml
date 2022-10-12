@@ -35,7 +35,7 @@ jobs:
           - '12'
           - '14'
           - '16'
-          - '17'
+          - '18'
 name: Coverage
 on:
   pull_request:

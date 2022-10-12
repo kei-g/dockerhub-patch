@@ -5,11 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Setup Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           cache: 'npm'
           node-version: ${{ matrix.node }}
@@ -23,7 +23,7 @@ jobs:
           export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
           npm test
       - name: Archive code coverages report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverages-report-${{ github.repository.name }}-${{ matrix.node }}
           path: |

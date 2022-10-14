@@ -1,4 +1,4 @@
-import { CookieBaker } from '..'
+import { CookieBaker, Minimum } from '..'
 import * as http from 'http'
 import * as https from 'https'
 
@@ -15,6 +15,13 @@ export type BasicCommunicationParameters = {
    * Cookie baker (optional)
    */
   baker?: CookieBaker
+
+  /**
+   * HTTP module (optional)
+   *
+   * https is used if this property is unspecified
+   */
+  http?: Minimum.HttpModule
 }
 
 /**
@@ -78,10 +85,10 @@ const communicate = <T>(
   } as Record<string, unknown>
   if (params.agent)
     opts.agent = params.agent
-  const req = https.request(
+  const req = (params.http ?? https).request(
     params.url,
     opts,
-    (res: http.IncomingMessage) => receiveResponse(res, cb)
+    (res: Minimum.HttpResponse) => receiveResponse(res, cb)
   )
   params.baker?.bake(req)
   req.on('error', (err: Error) => cb(err, undefined))
@@ -112,12 +119,12 @@ export const communicateAsync = <T>(params: CommunicationParameters): Promise<T>
 /**
  * Receives response from DockerHub
  *
- * @param res {http.IncomingMessage} Response
+ * @param res {Minimum.HttpResponse} Response
  *
  * @param cb {(err: Error, value: T) => void} Callback function
  */
 const receiveResponse = <T>(
-  res: http.IncomingMessage,
+  res: Minimum.HttpResponse,
   cb: (err: Error, value: T) => void
 ): void => {
   const context = {} as { data?: Buffer }

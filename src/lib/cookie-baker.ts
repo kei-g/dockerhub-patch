@@ -1,5 +1,4 @@
-import { Cookie, toCookie } from '..'
-import * as http from 'http'
+import { Cookie, Minimum, toCookie } from '..'
 
 /**
  * HTTP Cookie Baker
@@ -31,13 +30,13 @@ export class CookieBaker {
    *
    * @return {T} The request wrapped by this manager
    */
-  bake<T extends http.ClientRequest>(req: T): T {
+  bake<T extends Minimum.HttpRequest>(req: T): T {
     const cookie = this.get(req.host)?.map(
       (c: Cookie) => c.toString()
     )?.join('; ')?.trim()
     if (cookie?.length)
       req.setHeader('Cookie', cookie)
-    req.on('response', (res: http.IncomingMessage) => {
+    req.on('response', (res: Minimum.HttpResponse) => {
       if ('set-cookie' in res.headers)
         this.cookies[req.host] = res.headers['set-cookie'].map(toCookie)
     })

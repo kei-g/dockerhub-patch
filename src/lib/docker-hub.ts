@@ -39,6 +39,8 @@ export const loginAsync = (
     opts.agent = params.agent
   if (params.baker)
     opts.baker = params.baker
+  if (params.http)
+    opts.http = params.http
   return dockerHubAsync<DockerHub.Error | DockerHub.LoginResponse>('users/login', opts)
 }
 
@@ -64,5 +66,7 @@ export const setDescriptionAsync = (
     opts.agent = params.agent
   if (params.baker)
     opts.baker = params.baker
+  if (params.http)
+    opts.http = params.http
   return dockerHubAsync<unknown>(`repositories/${params.repo}`, opts)
 }

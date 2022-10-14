@@ -1,28 +1,109 @@
-import { CookieBaker, DockerHub, dockerHubAsync, loginAsync } from '.'
+import { Agent } from 'https'
+import { CookieBaker, DockerHub, PseudoDockerhub, dockerHubAsync, loginAsync } from '.'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import * as https from 'https'
-
-const password = process.env.DOCKERHUB_PASSWORD as string
-const username = process.env.DOCKERHUB_USERNAME as string
 
 describe(
   'DockerHub',
   () => {
-    const agent = new https.Agent({
+    const agent = new Agent({
       keepAlive: true
     })
     const baker = CookieBaker.default
+    const http = new PseudoDockerhub()
+    it(
+      'catch error - request',
+      async () => {
+        const promise = dockerHubAsync(
+          'error/request',
+          {
+            agent,
+            baker,
+            http,
+            payload: {},
+          }
+        )
+        let caught: unknown
+        await promise.catch((reason: unknown) => caught = reason)
+        expect(caught).to.be.a.instanceOf(Error)
+      }
+    )
+    it(
+      'catch error - response',
+      async () => {
+        const promise = dockerHubAsync(
+          'error/response',
+          {
+            agent,
+            baker,
+            http,
+            payload: {},
+          }
+        )
+        let caught: unknown
+        await promise.catch((reason: unknown) => caught = reason)
+        expect(caught).to.be.a.instanceOf(Error)
+      }
+    )
+    it(
+      'empty response',
+      async () => {
+        const promise = dockerHubAsync(
+          'empty',
+          {
+            agent,
+            baker,
+            http,
+            payload: {},
+          }
+        )
+        let caught: unknown
+        await promise.catch((reason: unknown) => caught = reason)
+        expect(caught).to.be.a.instanceOf(Error)
+      }
+    )
+    it(
+      'expire cookie',
+      async () => {
+        const login = await loginAsync(
+          {
+            baker,
+            http,
+            password: 'valid-password',
+            username: 'valid-user',
+          }
+        )
+        expect(login).haveOwnProperty('token')
+        if ('token' in login) {
+          await new Promise(
+            (resolve: (value: unknown) => void) =>
+              setTimeout(resolve, 1250)
+          )
+          const response = await dockerHubAsync<DockerHub.Error>(
+            'namespaces/snowstep/repositories/apt-fast/images-summary',
+            {
+              baker,
+              http,
+              payload: {},
+              token: login.token,
+            }
+          )
+          expect(response.message).to.be.a('string')
+        }
+      }
+    )
     it(
       'login - failure',
       async () => {
         const login = await loginAsync(
           {
             agent,
+            http,
             password: 'nopassword',
             username: 'invalidtestuser',
           }
         )
+        expect(login).haveOwnProperty('detail')
         if ('detail' in login) {
           expect(login.detail).to.be.a('string')
           expect(login.detail).to.be.eq('Incorrect authentication credentials')
@@ -30,62 +111,63 @@ describe(
         }
       }
     )
-    if (typeof password === 'string' && typeof username === 'string')
-      it(
-        'login - success',
-        async () => {
-          const login = await loginAsync(
+    it(
+      'login - success',
+      async () => {
+        const login = await loginAsync(
+          {
+            agent,
+            baker,
+            http,
+            password: 'valid-password',
+            username: 'valid-user',
+          }
+        )
+        expect(login).haveOwnProperty('token')
+        if ('token' in login) {
+          expect(login.detail).to.be.undefined
+          expect(login.token).to.be.a('string')
+          const image = await dockerHubAsync<DockerHub.Image>(
+            'repositories/snowstep/apt-fast/',
             {
               agent,
               baker,
-              password,
-              username,
+              http,
+              token: login.token,
             }
           )
-          if ('token' in login) {
-            expect(login.detail).to.be.undefined
-            expect(login.token).to.be.a('string')
-            const image = await dockerHubAsync<DockerHub.Image>(
-              'repositories/snowstep/apt-fast/',
-              {
-                agent,
-                baker,
-                token: login.token,
-              }
-            )
-            expect(image.hub_user).to.be.eq('snowstep')
-            expect(image.name).to.be.eq('apt-fast')
-            expect(image.namespace).to.be.eq('snowstep')
-            expect(image.user).to.be.eq('snowstep')
-          }
+          expect(image.hub_user).to.be.eq('snowstep')
+          expect(image.name).to.be.eq('apt-fast')
+          expect(image.namespace).to.be.eq('snowstep')
+          expect(image.user).to.be.eq('snowstep')
         }
-      )
+      }
+    )
     it(
       'without agent',
       async () => {
-        const response = await dockerHubAsync<DockerHub.Error>(
-          'namespaces/snowstep/repositories/apt-fast/images-summary',
+        const login = await loginAsync(
           {
             baker,
-            payload: {},
+            http,
+            password: 'valid-password',
+            username: 'valid-user',
           }
         )
-        expect(response.message).to.be.a('string')
+        expect(login).haveOwnProperty('token')
+        if ('token' in login) {
+          const response = await dockerHubAsync<DockerHub.Error>(
+            'namespaces/snowstep/repositories/apt-fast/images-summary',
+            {
+              baker,
+              http,
+              payload: {},
+              token: login.token,
+            }
+          )
+          expect(response.message).to.be.a('string')
+        }
       }
-    )
-  }
-)
-
-describe(
-  'Environment Variable - Are DOCKERHUB_* specified?',
-  () => {
-    it(
-      'Is DOCKERHUB_PASSWORD specified?',
-      () => expect(password).to.be.a('string')
-    )
-    it(
-      'Is DOCKERHUB_USERNAME specified?',
-      () => expect(username).to.be.a('string')
     )
   }
 )

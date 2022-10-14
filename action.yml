@@ -25,4 +25,4 @@ outputs:
     description: The response from DockerHub
 runs:
   main: 'dist/bin/patch.js'
-  using: 'node12'
+  using: 'node16'

@@ -1,4 +1,4 @@
-# dockerhub-patch [![License][license-image]][license-url]
+# dockerhub-patch [![Coverage][nyc-cov-image]][github-url] [![License][license-image]][license-url]
 
 [`dockerhub-patch`][github-url] - Patches description and overview to DockerHub
 
@@ -17,3 +17,4 @@
 [github-coverage-url]:https://github.com/kei-g/dockerhub-patch/actions/workflows/coverage.yml?query=branch%3Amain
 [license-image]:https://img.shields.io/github/license/kei-g/dockerhub-patch
 [license-url]:https://github.com/kei-g/dockerhub-patch/blob/main/LICENSE
+[nyc-cov-image]:https://img.shields.io/nycrc/kei-g/dockerhub-patch?config=.nycrc.json&label=coverage&logo=mocha

@@ -19,10 +19,11 @@ jobs:
         run: npm ci
       - name: Test
         run: npm test
+      - run: echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" >> $GITHUB_ENV
       - name: Archive code coverages report
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverages-report-${{ github.repository.name }}-${{ matrix.node }}
+          name: code-coverages-report-${{ env.REPOSITORY_NAME }}-${{ matrix.node }}
           path: |
             coverage
     strategy:

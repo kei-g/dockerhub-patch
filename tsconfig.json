@@ -8,7 +8,7 @@
     "emitBOM": false,
     "emitDeclarationOnly": true,
     "lib": [
-      "ESNext",
+      "ES2022",
     ],
     "module": "CommonJS",
     "moduleResolution": "node",

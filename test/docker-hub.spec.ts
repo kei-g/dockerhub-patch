@@ -74,22 +74,27 @@ describe(
           }
         )
         expect(login).haveOwnProperty('token')
-        if ('token' in login) {
-          await new Promise(
-            (resolve: (value: unknown) => void) =>
-              setTimeout(resolve, 1250)
-          )
-          const response = await dockerHubAsync<DockerHub.Error>(
-            'namespaces/snowstep/repositories/apt-fast/images-summary',
-            {
-              baker,
-              http,
-              payload: {},
-              token: login.token,
+        if ('token' in login)
+          return new Promise(
+            (resolve: (value: unknown) => void) => {
+              setTimeout(
+                async () => {
+                  const response = await dockerHubAsync<DockerHub.Error>(
+                    'namespaces/snowstep/repositories/apt-fast/images-summary',
+                    {
+                      baker,
+                      http,
+                      payload: {},
+                      token: login.token,
+                    }
+                  )
+                  expect(response.message).to.be.a('string')
+                  resolve(undefined)
+                },
+                5000
+              )
             }
           )
-          expect(response.message).to.be.a('string')
-        }
       }
     )
     it(

@@ -4,9 +4,11 @@ updates:
     open-pull-requests-limit: 16
     schedule:
       interval: "daily"
+    target-branch: "devel"
   - directory: "/"
     package-ecosystem: "npm"
     open-pull-requests-limit: 16
     schedule:
       interval: "daily"
+    target-branch: "devel"
 version: 2

@@ -1,5 +1,5 @@
 import { Agent } from 'https'
-import { CookieBaker, DockerHub, PseudoDockerhub, dockerHubAsync, loginAsync } from '.'
+import { CookieBaker, DockerHub, PseudoDockerhub, dockerHubAsync, loginAsync, setDescriptionAsync } from '.'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
@@ -145,6 +145,62 @@ describe(
           expect(image.name).to.be.eq('apt-fast')
           expect(image.namespace).to.be.eq('snowstep')
           expect(image.user).to.be.eq('snowstep')
+        }
+      }
+    )
+    it(
+      'patch with agent and cookie-baker',
+      async () => {
+        const login = await loginAsync(
+          {
+            agent,
+            baker,
+            http,
+            password: 'valid-password',
+            username: 'valid-user',
+          }
+        )
+        expect(login).haveOwnProperty('token')
+        if ('token' in login && typeof login.token === 'string') {
+          expect(login.detail).to.be.undefined
+          expect(login.token).to.be.a('string')
+          await setDescriptionAsync(
+            {
+              agent,
+              baker,
+              description: 'This is a single-line description.',
+              http,
+              overview: 'This is the full-text long description.',
+              repo: 'snowstep/apt-fast',
+              token: login.token,
+            }
+          )
+        }
+      }
+    )
+    it(
+      'patch with neither agent nor cookie-baker',
+      async () => {
+        const login = await loginAsync(
+          {
+            http,
+            password: 'valid-password',
+            username: 'valid-user',
+          }
+        )
+        expect(login).haveOwnProperty('token')
+        if ('token' in login && typeof login.token === 'string') {
+          expect(login.detail).to.be.undefined
+          expect(login.token).to.be.a('string')
+          await setDescriptionAsync(
+            {
+              description: 'This is a single-line description.',
+              http,
+              overview: 'This is the full-text long description.',
+              repo: 'snowstep/apt-fast',
+              token: login.token,
+            }
+          )
         }
       }
     )

@@ -39,7 +39,7 @@
   "repository": "github:kei-g/dockerhub-patch",
   "scripts": {
     "build": "run-p build:*",
-    "build:bin": "esbuild src/bin/patch.ts --charset=utf8 --minify --outfile=dist/bin/patch.js --platform=node",
+    "build:bin": "esbuild src/bin/patch.ts --charset=utf8 --minify --outfile=dist/bin/patch.mjs --platform=node",
     "build:index": "esbuild src/index.ts --bundle --charset=utf8 --minify --outfile=dist/index.js --platform=node --target=ES2015",
     "build:tsc": "tsc",
     "clean": "rimraf dist/bin/ dist/index.js index.d.ts lib/ types/",

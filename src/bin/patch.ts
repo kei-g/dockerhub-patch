@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import * as https from 'http'
+import * as https from 'https'
 import { CookieBaker, loginAsync, setDescriptionAsync } from '..'
 
 const main = async <T>(): Promise<T> => {

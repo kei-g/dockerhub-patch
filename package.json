@@ -4,7 +4,7 @@
     "name": "kei-g"
   },
   "bin": {
-    "dockerhub-patch": "index.js"
+    "dockerhub-patch": "dist/bin/patch.js"
   },
   "bug": {
     "url": "https://github.com/kei-g/dockerhub-patch/issues"
@@ -39,10 +39,10 @@
   "repository": "github:kei-g/dockerhub-patch",
   "scripts": {
     "build": "run-p build:*",
-    "build:bin": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=index.js --platform=node",
+    "build:bin": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=dist/bin/patch.js --platform=node",
     "build:index": "esbuild src/index.ts --bundle --charset=utf8 --minify --outfile=dist/index.js --platform=node --target=ES2015",
     "build:tsc": "tsc",
-    "clean": "rimraf dist/index.js index.d.ts lib/ types/",
+    "clean": "rimraf dist/bin/ dist/index.js index.d.ts lib/ types/",
     "cover": "nyc --check-coverage -r html -r text _mocha",
     "lint": "eslint src/**/*.ts",
     "prebuild": "run-s lint",

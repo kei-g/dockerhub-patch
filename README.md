@@ -18,7 +18,7 @@
 | overview | Full-text description of your docker image. Typically the content of 'README.md'. | true |
 | password | Your password on DockerHub. | true |
 | repo | Repository name of your docker image. | true |
-| username | Your name on DockerHub. This field will be included to `repo` as a prefix. | true |
+| username | Your name on DockerHub. This field will be prepended to `repo` with '/'. | true |
 
 ## Action Outputs
 

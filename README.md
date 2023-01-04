@@ -1,4 +1,6 @@
-# dockerhub-patch [![Coverage][nyc-cov-image]][github-url] [![License][license-image]][license-url]
+# dockerhub-patch [![License][license-image]][license-url]
+
+[![Coverage][nyc-cov-image]][github-url]
 
 [`dockerhub-patch`][github-url] - Patches description and overview to DockerHub
 

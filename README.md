@@ -90,6 +90,18 @@ on:
     tags:
 ```
 
+## License
+
+The scripts and documentation in this project are released under the [BSD-3-Clause License](https://github.com/kei-g/dockerhub-patch/blob/main/LICENSE)
+
+## Contributions
+
+Contributions are welcome! See [Contributor's Guide](https://github.com/kei-g/dockerhub-patch/blob/main/CONTRIBUTING.md)
+
+### Code of Conduct
+
+:clap: Be nice. See [our code of conduct](https://github.com/kei-g/dockerhub-patch/blob/main/CODE_OF_CONDUCT.md)
+
 [github-url]:https://github.com/kei-g/dockerhub-patch
 [github-build-image]:https://github.com/kei-g/dockerhub-patch/actions/workflows/build.yml/badge.svg?branch=main
 [github-build-url]:https://github.com/kei-g/dockerhub-patch/actions/workflows/build.yml?query=branch%3Amain

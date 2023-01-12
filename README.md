@@ -24,7 +24,9 @@
 
 ## Action Outputs
 
-This actions won't output anything.
+| Output name | Description |
+|-|-|
+| response | The response from DockerHub. |
 
 ## Example
 

@@ -29,4 +29,8 @@ jobs:
 name: Build
 on:
   pull_request:
+    branches:
+      - '**'
   push:
+    branches:
+      - '**'

@@ -63,7 +63,7 @@ class Request implements Minimum.HttpRequest {
     return this
   }
 
-  setHeader(name: string, value: string | number | readonly string[]): Request {
+  setHeader(_name: string, _value: string | number | readonly string[]): Request {
     return this
   }
 

@@ -1,6 +1,5 @@
 jobs:
   build:
-    if: github.ref_type == 'branch'
     name: Build on Node.js ${{ matrix.node }}
     runs-on: ubuntu-latest
     steps:
@@ -28,9 +27,6 @@ jobs:
           - '18'
 name: Build
 on:
-  pull_request:
-    branches:
-      - '**'
   push:
     branches:
-      - '**'
+      - main

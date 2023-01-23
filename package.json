@@ -33,8 +33,10 @@
   "license": "BSD-3-Clause",
   "main": "dist/index.js",
   "name": "@kei-g/dockerhub-patch",
+  "private": true,
   "publishConfig": {
-    "access": "public"
+    "access": "restricted",
+    "registry": "http://localhost"
   },
   "repository": "github:kei-g/dockerhub-patch",
   "scripts": {

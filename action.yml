@@ -8,8 +8,10 @@ inputs:
     description: Single-line description of your docker image
     required: true
   overview:
-    description: Full-text description of your docker image
-    required: true
+    description: >
+      Full-text description of your docker image.
+      If not specified, a content of README.md in your repository alternates.
+    required: false
   password:
     description: Your password on DockerHub
     required: true

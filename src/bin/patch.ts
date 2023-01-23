@@ -1,15 +1,16 @@
-import * as core from '@actions/core'
-import * as https from 'https'
+import { Agent } from 'https'
 import { CookieBaker, loginAsync, setDescriptionAsync } from '..'
+import { getInput, setFailed, setOutput, setSecret } from '@actions/core'
+import { readFileSync } from 'fs'
 
 const main = async <T>(): Promise<T> => {
-  const description = core.getInput('description', { required: true })
-  const overview = core.getInput('overview', { required: true })
-  const password = core.getInput('password', { required: true })
-  core.setSecret(password)
-  const repo = core.getInput('repo', { required: true })
-  const username = core.getInput('username', { required: true })
-  const agent = new https.Agent({
+  const description = getInput('description', { required: true })
+  const overview = getInput('overview') || readFileSync('README.md').toString()
+  const password = getInput('password', { required: true })
+  setSecret(password)
+  const repo = getInput('repo', { required: true })
+  const username = getInput('username', { required: true })
+  const agent = new Agent({
     keepAlive: true,
   })
   const baker = CookieBaker.default
@@ -36,7 +37,7 @@ const main = async <T>(): Promise<T> => {
 }
 
 main<unknown>().catch(
-  (err: string | Error) => core.setFailed(err)
+  (err: string | Error) => setFailed(err)
 ).then(
-  (value: unknown) => typeof value === 'undefined' || core.setOutput('response', value)
+  (value: unknown) => typeof value === 'undefined' || setOutput('response', value)
 )

@@ -5,6 +5,10 @@
   "codemetrics.basics.Exclude": [
     "**/test/**/*.spec.ts",
   ],
+  "markdownlint.config": {
+    "MD009": false,
+    "MD041": false,
+  },
   "markdownlint.ignore": [
     "**/CONTRIBUTING.md",
   ],

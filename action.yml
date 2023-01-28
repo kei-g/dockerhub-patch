@@ -1,30 +1,36 @@
-author: 'kei-g'
+author: kei-g
 branding:
-  color: 'blue'
-  icon: 'upload'
-description: 'Patches description and overview to DockerHub'
+  color: blue
+  icon: upload
+description: >
+  This action patches description and overview to DockerHub.
 inputs:
   description:
-    description: Single-line description of your docker image
+    description: >
+      The single-line description of your docker image.
     required: true
   overview:
     description: >
-      Full-text description of your docker image.
+      The full-text description of your docker image.
       If not specified, a content of README.md in your repository alternates.
     required: false
   password:
-    description: Your password on DockerHub
+    description: >
+      Your password on DockerHub.
     required: true
   repo:
-    description: Repository name of your docker image
+    description: >
+      The repository name on DockerHub to patch.
     required: true
   username:
-    description: Your name on DockerHub
+    description: >
+      Your name on DockerHub.
     required: true
-name: 'DockerHub Patcher'
+name: DockerHub Patcher
 outputs:
   response:
-    description: The response from DockerHub
+    description: >
+      The response returned from DockerHub.
 runs:
-  main: 'dist/bin/patch.js'
-  using: 'node16'
+  main: dist/bin/patch.js
+  using: node16

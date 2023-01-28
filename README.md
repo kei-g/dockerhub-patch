@@ -1,8 +1,10 @@
-# dockerhub-patch [![License][license-image]][license-url]
+[![`docker/patch`][github-repo-image]][github-repo-url] [![License][license-image]][license-url]
 
-[![Coverage][nyc-cov-image]][github-url]
+# kei-g/dockerhub-patch
 
-[`dockerhub-patch`][github-url] - Patches description and overview to DockerHub
+[`kei-g/dockerhub-patch`][github-repo-url] - Patches description and overview to DockerHub.
+
+[![Coverage][nyc-cov-image]][github-coverage-url]
 
 ## CI Status
 
@@ -17,7 +19,7 @@
 | Input name | Description | Required |
 |-|-|-|
 | description | Single-line description of your docker image. | true |
-| overview | Full-text description of your docker image. Typically the content of 'README.md'. | true |
+| overview | Full-text description of your docker image. If absent, the content of 'README.md' will be used as this. | false |
 | password | Your password on DockerHub. | true |
 | repo | Repository name of your docker image. | true |
 | username | Your name on DockerHub. This field will be prepended to `repo` with '/'. | true |
@@ -38,11 +40,12 @@ jobs:
     name: Publish the docker image
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout the repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
-      - id: meta
+          submodules: true
+      - id: metadata
         name: Docker metadata
         uses: docker/metadata-action@v4
         with:
@@ -64,31 +67,20 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}
-      - id: overview
-        name: Load the overview from README.md
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('node:fs')
-            fs.readFile('README.md', {}, (err, data) => {
-              if (err)
-                core.setFailed(err.message)
-              else
-                core.setOutput('content', data.toString())
-            })
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ steps.metadata.outputs.tags }}
       - name: Patch the description
-        uses: kei-g/dockerhub-patch@main
+        uses: kei-g/dockerhub/patch@main
         with:
-          description: An example image
-          overview: |
-            ${{ steps.overview.outputs.content }}
+          description: An example image.
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repo: ${{ env.IMAGE_NAME }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
 name: Example
 on:
-  create:
+  push:
+    branches-ignore:
+      - '**'
     tags:
 ```
 
@@ -104,13 +96,14 @@ Contributions are welcome! See [Contributor's Guide](https://github.com/kei-g/do
 
 :clap: Be nice. See [our code of conduct](https://github.com/kei-g/dockerhub-patch/blob/main/CODE_OF_CONDUCT.md)
 
-[github-url]:https://github.com/kei-g/dockerhub-patch
 [github-build-image]:https://github.com/kei-g/dockerhub-patch/actions/workflows/build.yml/badge.svg?branch=main
 [github-build-url]:https://github.com/kei-g/dockerhub-patch/actions/workflows/build.yml?query=branch%3Amain
 [github-codeql-image]:https://github.com/kei-g/dockerhub-patch/actions/workflows/codeql.yml/badge.svg?branch=main
 [github-codeql-url]:https://github.com/kei-g/dockerhub-patch/actions/workflows/codeql.yml?query=branch%3Amain
 [github-coverage-image]:https://github.com/kei-g/dockerhub-patch/actions/workflows/coverage.yml/badge.svg?branch=main
 [github-coverage-url]:https://github.com/kei-g/dockerhub-patch/actions/workflows/coverage.yml?query=branch%3Amain
+[github-repo-image]:https://img.shields.io/badge/github-kei--g%2Fdockerhub--patch-232931?logo=github
+[github-repo-url]:https://github.com/kei-g/dockerhub-patch
 [license-image]:https://img.shields.io/github/license/kei-g/dockerhub-patch
 [license-url]:https://github.com/kei-g/dockerhub-patch/blob/main/LICENSE
 [nyc-cov-image]:https://img.shields.io/nycrc/kei-g/dockerhub-patch?config=.nycrc.json&label=coverage&logo=mocha

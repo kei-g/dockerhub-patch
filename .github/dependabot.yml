@@ -1,12 +1,15 @@
 updates:
-  - directory: "/"
-    package-ecosystem: "github-actions"
+  - directory: /
+    labels:
+      - ci
     open-pull-requests-limit: 16
+    package-ecosystem: github-actions
     schedule:
-      interval: "daily"
-  - directory: "/"
-    package-ecosystem: "npm"
+      interval: daily
+  - directory: /
     open-pull-requests-limit: 16
+    package-ecosystem: npm
     schedule:
-      interval: "daily"
+      interval: daily
+    versioning-strategy: increase
 version: 2

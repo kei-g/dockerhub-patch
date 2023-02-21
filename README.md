@@ -37,6 +37,7 @@ env:
   IMAGE_NAME: example
 jobs:
   publish:
+    if: github.ref_type == 'tag'
     name: Publish the docker image
     runs-on: ubuntu-latest
     steps:
@@ -78,10 +79,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
 name: Example
 on:
-  push:
-    branches-ignore:
-      - '**'
+  create:
     tags:
+      - 'v[0-9]+(\.[0-9]+)*(\-[A-Za-z0-9]+)*'
 ```
 
 ## License

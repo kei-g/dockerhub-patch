@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          - 'javascript'
+          - javascript
 name: CodeQL
 on:
   push:

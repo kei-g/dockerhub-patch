@@ -20,7 +20,7 @@
 |-|-|-|
 | description | Single-line description of your docker image. | true |
 | overview | Full-text description of your docker image. If absent, the content of 'README.md' will be used as this. | false |
-| password | Your password on DockerHub. | true |
+| password | Your PAT or password on DockerHub. PATs are recommended to be specified rather than passwords. | true |
 | repo | Repository name of your docker image. | true |
 | username | Your name on DockerHub. This field will be prepended to `repo` with '/'. | true |
 
@@ -60,7 +60,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
       - name: Run Buildx and Push it to DockerHub
         uses: docker/build-push-action@v3
@@ -74,7 +74,7 @@ jobs:
         uses: kei-g/dockerhub-patch@main
         with:
           description: An example image.
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
           repo: ${{ env.IMAGE_NAME }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
 name: Example

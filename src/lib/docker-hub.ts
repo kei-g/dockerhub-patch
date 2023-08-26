@@ -1,4 +1,5 @@
 import { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub, communicateAsync } from '..'
+import { substituteIf } from './misc'
 
 /**
  * Send a request to DockerHub
@@ -35,12 +36,9 @@ export const loginAsync = (
       username: params.username,
     },
   } as CommunicationParametersWithoutURL
-  if (params.agent)
-    opts.agent = params.agent
-  if (params.baker)
-    opts.baker = params.baker
-  if (params.http)
-    opts.http = params.http
+  substituteIf(params.agent, opts, 'agent', params.agent)
+  substituteIf(params.baker, opts, 'baker', params.baker)
+  substituteIf(params.http, opts, 'http', params.http)
   return dockerHubAsync<DockerHub.Error | DockerHub.LoginResponse>('users/login', opts)
 }
 
@@ -62,11 +60,8 @@ export const setDescriptionAsync = (
     },
     token: params.token,
   } as CommunicationParametersWithoutURL
-  if (params.agent)
-    opts.agent = params.agent
-  if (params.baker)
-    opts.baker = params.baker
-  if (params.http)
-    opts.http = params.http
+  substituteIf(params.agent, opts, 'agent', params.agent)
+  substituteIf(params.baker, opts, 'baker', params.baker)
+  substituteIf(params.http, opts, 'http', params.http)
   return dockerHubAsync<unknown>(`repositories/${params.repo}`, opts)
 }

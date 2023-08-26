@@ -91,7 +91,7 @@ describe(
                   expect(response.message).to.be.a('string')
                   resolve(undefined)
                 },
-                5000
+                100
               )
             }
           )

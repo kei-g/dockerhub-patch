@@ -33,4 +33,4 @@ outputs:
       The response returned from DockerHub.
 runs:
   main: dist/bin/patch.js
-  using: node16
+  using: node20

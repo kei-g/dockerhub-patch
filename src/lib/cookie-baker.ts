@@ -31,9 +31,7 @@ export class CookieBaker {
    * @return {T} The request wrapped by this manager
    */
   bake<T extends Minimum.HttpRequest>(req: T): T {
-    const cookie = this.get(req.host)?.map(
-      (c: Cookie) => c.toString()
-    )?.join('; ')?.trim()
+    const cookie = this.get(req.host)?.map(stringify)?.join('; ')?.trim()
     if (cookie?.length)
       req.setHeader('Cookie', cookie)
     req.on('response', (res: Minimum.HttpResponse) => {
@@ -62,3 +60,12 @@ export class CookieBaker {
     }
   }
 }
+
+/**
+ * Calls toString.
+ *
+ * @param {object} obj an object.
+ *
+ * @returns {string} converted string.
+ */
+const stringify = (obj: object): string => obj.toString()

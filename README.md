@@ -1,4 +1,4 @@
-[![`docker/patch`][github-repo-image]][github-repo-url] [![License][license-image]][license-url]
+[![`kei-g/dockerhub-patch`][github-repo-image]][github-repo-url] [![License][license-image]][license-url]
 
 # kei-g/dockerhub-patch
 
@@ -71,7 +71,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
             ${{ steps.metadata.outputs.tags }}
       - name: Patch the description
-        uses: kei-g/dockerhub/patch@main
+        uses: kei-g/dockerhub-patch@main
         with:
           description: An example image.
           password: ${{ secrets.DOCKERHUB_PASSWORD }}

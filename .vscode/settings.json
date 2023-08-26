@@ -1,7 +1,4 @@
 {
-  "files.associations": {
-    "**/LICENSE": "plaintext",
-  },
   "codemetrics.basics.Exclude": [
     "**/test/**/*.spec.ts",
   ],

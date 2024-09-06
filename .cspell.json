@@ -1,18 +1,15 @@
 {
+  "allowCompoundWords": true,
+  "caseSensitive": false,
   "version": "0.2",
   "words": [
-    "autobuild",
     "buildx",
     "codeql",
     "devel",
     "dockerhub",
     "errinfo",
     "esbuild",
-    "invalidtestuser",
-    "linebreak",
     "nopassword",
-    "outfile",
-    "postpublish",
     "snowstep",
     "tada",
     "txnid"

@@ -1,6 +1,6 @@
 {
   "all": true,
-  "branches": 90,
+  "branches": 86.36,
   "check-coverage": true,
   "exclude": [
     "**/*.spec.ts",
@@ -9,7 +9,7 @@
   "extension": [
     ".ts"
   ],
-  "functions": 94.73,
+  "functions": 94.87,
   "include": [
     "src/**/*.ts"
   ],

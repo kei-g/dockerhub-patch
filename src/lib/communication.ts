@@ -41,7 +41,7 @@ const communicate = <T>(params: CommunicationParameters, cb: Callback<T>): void 
  *
  * @returns A promise
  */
-export const communicateAsync = <T>(params: CommunicationParameters): Promise<T> => new Promise((resolve: (value: T) => void, reject: (reason?: unknown) => void) => communicate(params, createExecutor(resolve, reject)))
+export const communicateAsync = <T>(params: CommunicationParameters): Promise<T> => new Promise((resolve: (_value: T) => void, reject: (_reason?: unknown) => void) => communicate(params, createExecutor(resolve, reject)))
 
 /**
  * Receives response from DockerHub

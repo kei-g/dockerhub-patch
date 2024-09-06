@@ -3,7 +3,7 @@ import { CommonFieldsOfCookie, Cookie } from '..'
 /**
  * Type of a function that accepts a string.
  */
-type Acceptor = (text: string) => void
+type Acceptor = (_text: string) => void
 
 /**
  * Abstract class to give keys and values to a cookie.
@@ -18,6 +18,7 @@ abstract class CookieVisitor {
    *
    * @returns {boolean} True to abort. Otherwise, subsequent data will be handled if present.
    */
+  // eslint-disable-next-line no-unused-vars
   protected abstract handle(cookie: ParsedCookie, datum: KeyValuePair): boolean
 
   /**
@@ -44,6 +45,7 @@ class FussyCookieVisitor extends CookieVisitor {
    * @param {Acceptor} preferredMethod
    * @param {string} preferredKey
    */
+  // eslint-disable-next-line no-unused-vars
   constructor(private readonly preferredMethod: Acceptor, private readonly preferredKey: string) {
     super()
   }

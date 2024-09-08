@@ -1,9 +1,8 @@
-import { DockerHub, Minimum } from '..'
+import { Action0, DockerHub, Func, MaybeCallback, Minimum, ResponseCallback } from '..'
 import { EventEmitter } from 'events'
 import { IncomingHttpHeaders } from 'http'
 import { RequestOptions } from 'https'
-
-type ResponseCallback = (res: Minimum.HttpResponse) => void
+import { isPromise } from 'util/types'
 
 export class PseudoDockerhub implements Minimum.HttpModule {
   request(url: string, opts: RequestOptions, cb: ResponseCallback): Minimum.HttpRequest {
@@ -11,44 +10,48 @@ export class PseudoDockerhub implements Minimum.HttpModule {
   }
 }
 
-type MaybeCallback = () => void | undefined
-
 class Request implements Minimum.HttpRequest {
+  #handleEmitResponse(cb: ResponseCallback, opts: RequestOptions, eventEmitter: EventEmitter, chunk: unknown) {
+    const handlers = [
+      { ctor: EmptyResponse, regex: /^\/v2\/empty$/, selector: this.#returnEmptyString(), },
+      { ctor: ErrorResponse, regex: /^\/v2\/error\//, selector: this.#sliceString(3), },
+      { ctor: LoginResponse, regex: /^\/v2\/users\/login$/, selector: this.#returnEmptyString(), },
+      { ctor: PatchResponse, method: 'PATCH', selector: this.#sliceString(3), },
+      { ctor: ImageResponse, regex: /^\/v2\/repositories\//, selector: this.#returnEmptyString(), },
+      { ctor: ImageSummaryResponse, regex: /^\/v2\/namespaces\//, selector: this.#returnEmptyString(), },
+    ] as const
+    const handler = handlers.find(this.#testHandler.bind(this, opts))
+    if (handler) {
+      const response = new handler.ctor(chunk, eventEmitter, handler.selector(this.url.pathname))
+      eventEmitter.emit('response', response)
+      cb(response)
+    }
+  }
+
+  #returnEmptyString() {
+    return (_: string) => ''
+  }
+
+  #sliceString(count: number) {
+    return (pathname: string) => pathname.split('/').slice(count).join('/')
+  }
+
+  #testHandler(opts: RequestOptions, handler: { method: string } | { regex: RegExp }) {
+    return 'regex' in handler ? handler.regex.test(this.url.pathname) : handler.method === opts.method
+  }
+
   private readonly eventEmitter = new EventEmitter()
 
   private readonly url: URL
 
   constructor(url: string, opts: RequestOptions, cb: ResponseCallback) {
-    this.eventEmitter.once(
-      '--emit-response',
-      (eventEmitter: EventEmitter, chunk: unknown) => {
-        let response = undefined as unknown as Minimum.HttpResponse
-        if (this.url.pathname === '/v2/empty')
-          response = new EmptyResponse(chunk, eventEmitter)
-        else if (this.url.pathname.startsWith('/v2/error/'))
-          response = new ErrorResponse(chunk, eventEmitter, this.url.pathname.slice(10))
-        else if (this.url.pathname === '/v2/users/login')
-          response = new LoginResponse(chunk, eventEmitter)
-        else if (opts.method === 'PATCH')
-          response = new PatchResponse(
-            chunk,
-            this.url.pathname.split('/').slice(3).join('/'),
-            eventEmitter
-          )
-        else if (this.url.pathname.startsWith('/v2/repositories/'))
-          response = new ImageResponse(chunk, eventEmitter)
-        else if (this.url.pathname.startsWith('/v2/namespaces/'))
-          response = new ImageSummaryResponse(chunk, eventEmitter)
-        eventEmitter.emit('response', response)
-        cb(response)
-      }
-    )
+    this.eventEmitter.once('--emit-response', this.#handleEmitResponse.bind(this, cb, opts))
     this.url = new URL(url)
   }
 
   end(cb: MaybeCallback): Request {
-    queueMicrotask(() => this.eventEmitter.emit('--emit-response', this.eventEmitter, '{}'))
-    queueMicrotask(() => this.eventEmitter.emit('--end', cb))
+    queueMicrotask(this.eventEmitter.emit.bind(this.eventEmitter, '--emit-response', this.eventEmitter, '{}'))
+    queueMicrotask(this.eventEmitter.emit.bind(this.eventEmitter, '--end', cb))
     return this
   }
 
@@ -56,10 +59,10 @@ class Request implements Minimum.HttpRequest {
     return this.url.host
   }
 
-  on(event: 'error', handler: (err: Error) => void): Request
-  on(event: 'response', handler: (res: Minimum.HttpResponse) => void): Request
-  on(event: unknown, handler: unknown): Request {
-    this.eventEmitter.on(event as string, handler as (...args: unknown[]) => void)
+  on(event: 'error', handler: Func<Error>): Request
+  on(event: 'response', handler: Func<Minimum.HttpResponse>): Request
+  on(event: 'error' | 'response', handler: Func<Error> | Func<Minimum.HttpResponse>): Request {
+    this.eventEmitter.on(event, handler)
     return this
   }
 
@@ -68,9 +71,7 @@ class Request implements Minimum.HttpRequest {
   }
 
   write(chunk: unknown): boolean {
-    queueMicrotask(
-      () => this.eventEmitter.emit('--emit-response', this.eventEmitter, chunk)
-    )
+    queueMicrotask(this.eventEmitter.emit.bind(this.eventEmitter, '--emit-response', this.eventEmitter, chunk))
     return true
   }
 }
@@ -78,19 +79,18 @@ class Request implements Minimum.HttpRequest {
 abstract class Response<T> implements Minimum.HttpResponse {
   protected readonly eventEmitter = new EventEmitter()
 
+  protected respond(cb: MaybeCallback, response: object) {
+    this.eventEmitter.emit('data', Buffer.from(JSON.stringify(response)))
+    this.eventEmitter.emit('end')
+    if (cb)
+      cb()
+  }
+
   constructor(chunk: unknown, request: EventEmitter) {
-    chunk instanceof Promise
-      ? chunk.then(
-        (value: unknown) => this.eventEmitter.emit('error', value)
-      )
-      : request.on(
-        '--end',
-        (cb: MaybeCallback) => this.eventEmitter.emit(
-          '--request-end',
-          JSON.parse(chunk as string) as T,
-          cb
-        )
-      )
+    if (isPromise(chunk))
+      chunk.then(this.eventEmitter.emit.bind(this.eventEmitter, 'error'))
+    else
+      request.on('--end', this.eventEmitter.emit.bind(this.eventEmitter, '--request-end', JSON.parse(chunk as string) as T))
   }
 
   get headers(): IncomingHttpHeaders {
@@ -99,113 +99,88 @@ abstract class Response<T> implements Minimum.HttpResponse {
     }
   }
 
-  on(event: 'data', handler: (data: Buffer) => void): Minimum.HttpResponse
-  on(event: 'end', handler: () => void): Minimum.HttpResponse
-  on(event: 'error', handler: (err: Error) => void): Minimum.HttpResponse
-  on(event: unknown, handler: unknown): Minimum.HttpResponse {
-    this.eventEmitter.on(
-      event as string,
-      handler as (...args: unknown[]) => void
-    )
+  on(event: 'data', handler: Func<Buffer>): Minimum.HttpResponse
+  on(event: 'end', handler: Action0): Minimum.HttpResponse
+  on(event: 'error', handler: Func<Error>): Minimum.HttpResponse
+  on(event: 'data' | 'end' | 'error', handler: Action0 | Func<Buffer> | Func<Error>): Minimum.HttpResponse {
+    this.eventEmitter.on(event, handler)
     return this
   }
 }
 
 class EmptyResponse extends Response<Record<string, unknown>> {
+  #handleRequestEnd(_: Record<string, unknown>, cb: MaybeCallback) {
+    this.eventEmitter.emit('end')
+    if (cb)
+      cb()
+  }
+
   constructor(chunk: unknown, request: EventEmitter) {
     super(chunk, request)
-    this.eventEmitter.on(
-      '--request-end',
-      (_: Record<string, unknown>, cb: MaybeCallback) => {
-        this.eventEmitter.emit('end')
-        if (cb)
-          cb()
-      }
-    )
+    this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }
 }
 
 class ErrorResponse extends Response<Record<string, unknown>> {
   constructor(chunk: unknown, request: EventEmitter, when: string) {
     super(chunk, request)
-    queueMicrotask(
-      () => {
-        switch (when) {
-          case 'request':
-            request.emit('error', new Error())
-            break
-          case 'response':
-            this.eventEmitter.emit('error', new Error())
-            break
-        }
-      }
-    )
+    const template = {
+      request: request.emit.bind(request, 'error', new Error()) as Action0,
+      response: this.eventEmitter.emit.bind(this.eventEmitter, 'error', new Error()) as Action0,
+    } as const
+    if (when in template)
+      queueMicrotask(template[when])
   }
 }
 
 class ImageResponse extends Response<Record<string, unknown>> {
-  constructor(chunk: unknown, request: EventEmitter) {
-    super(chunk, request)
-    this.eventEmitter.on(
-      '--request-end',
-      (_: Record<string, unknown>, cb: MaybeCallback) => {
-        const json = JSON.stringify(
-          {
-            hub_user: 'snowstep',
-            name: 'apt-fast',
-            namespace: 'snowstep',
-            user: 'snowstep',
-          }
-        )
-        const buf1 = Buffer.from(json.slice(0, json.length / 2))
-        const buf2 = Buffer.from(json.slice(json.length / 2))
-        this.eventEmitter.emit('data', buf1)
-        this.eventEmitter.emit('data', buf2)
-        this.eventEmitter.emit('end')
-        if (cb)
-          cb()
+  #handleRequestEnd(_: Record<string, unknown>, cb: MaybeCallback) {
+    const json = JSON.stringify(
+      {
+        hub_user: 'snowstep',
+        name: 'apt-fast',
+        namespace: 'snowstep',
+        user: 'snowstep',
       }
     )
+    const buf1 = Buffer.from(json.slice(0, json.length / 2))
+    const buf2 = Buffer.from(json.slice(json.length / 2))
+    this.eventEmitter.emit('data', buf1)
+    this.eventEmitter.emit('data', buf2)
+    this.eventEmitter.emit('end')
+    if (cb)
+      cb()
+  }
+
+  constructor(chunk: unknown, request: EventEmitter) {
+    super(chunk, request)
+    this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }
 }
 
 class ImageSummaryResponse extends Response<Record<string, unknown>> {
+  #handleRequestEnd(_: Record<string, unknown>, cb: MaybeCallback) {
+    this.respond(cb, { message: 'this is a message' })
+  }
+
   constructor(chunk: unknown, request: EventEmitter) {
     super(chunk, request)
-    this.eventEmitter.on(
-      '--request-end',
-      (_: Record<string, unknown>, cb: MaybeCallback) => {
-        this.eventEmitter.emit('data', Buffer.from(JSON.stringify(
-          {
-            message: 'this is a message'
-          }
-        )))
-        this.eventEmitter.emit('end')
-        if (cb)
-          cb()
-      }
-    )
+    this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }
 }
 
 class LoginResponse extends Response<DockerHub.LoginParameters> {
+  #handleRequestEnd(req: DockerHub.LoginParameters, cb: MaybeCallback) {
+    const index = +(req.username === 'invalidtestuser') * 2 + +(req.password === 'nopassword')
+    const response1 = { token: 'foobar' }
+    const response2 = { detail: 'Incorrect authentication credentials' }
+    const responses = [response1, response1, response1, response2]
+    this.respond(cb, responses[index])
+  }
+
   constructor(chunk: unknown, request: EventEmitter) {
     super(chunk, request)
-    this.eventEmitter.on(
-      '--request-end',
-      (req: DockerHub.LoginParameters, cb: MaybeCallback) => {
-        const failure = req.username === 'invalidtestuser'
-          && req.password === 'nopassword'
-        const response = failure
-          ? { detail: 'Incorrect authentication credentials' }
-          : { token: 'foobar' }
-        const data = Buffer.from(JSON.stringify(response))
-        this.eventEmitter.emit('data', data)
-        this.eventEmitter.emit('end')
-        if (cb)
-          cb()
-      }
-    )
+    this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }
 
   get headers(): IncomingHttpHeaders {
@@ -221,20 +196,12 @@ class LoginResponse extends Response<DockerHub.LoginParameters> {
 }
 
 class PatchResponse extends Response<DockerHub.Description> {
-  constructor(chunk: unknown, private readonly repository: string, request: EventEmitter) {
+  #handleRequestEnd(req: DockerHub.Description, cb: MaybeCallback) {
+    this.respond(cb, { message: `${req.overview} has been set to ${req.repo}` })
+  }
+
+  constructor(chunk: unknown, request: EventEmitter, private readonly repository: string) {
     super(chunk, request)
-    this.eventEmitter.on(
-      '--request-end',
-      (req: DockerHub.Description, cb: MaybeCallback) => {
-        this.eventEmitter.emit('data', Buffer.from(JSON.stringify(
-          {
-            message: `${req.overview} has been set to ${req.repo}`
-          }
-        )))
-        this.eventEmitter.emit('end')
-        if (cb)
-          cb()
-      }
-    )
+    this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }
 }

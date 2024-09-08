@@ -4,8 +4,6 @@
 
 [`kei-g/dockerhub-patch`][github-repo-url] - Patches description and overview to DockerHub.
 
-[![Coverage][nyc-cov-image]][github-coverage-url]
-
 ## CI Status
 
 | Workflow Name | Status |
@@ -106,4 +104,3 @@ Contributions are welcome! See [Contributor's Guide](https://github.com/kei-g/do
 [github-repo-url]:https://github.com/kei-g/dockerhub-patch
 [license-image]:https://img.shields.io/github/license/kei-g/dockerhub-patch
 [license-url]:https://github.com/kei-g/dockerhub-patch/blob/main/LICENSE
-[nyc-cov-image]:https://img.shields.io/nycrc/kei-g/dockerhub-patch?config=.nycrc.json&label=coverage&logo=mocha

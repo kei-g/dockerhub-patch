@@ -25,6 +25,14 @@ export const createExecutor = <T>(resolve: Action1<T, void>, reject: Action1<unk
   (error: Error, value: T) => error ? reject(error) : resolve(value)
 
 /**
+ *
+ * @param value
+ * @param alternateValue
+ * @returns
+ */
+export const nullishCoalesce = <T>(value: T | undefined, alternateValue: T) => value ?? alternateValue
+
+/**
  * Substitutes a value to an object of a specified key if the first argument is true.
  *
  * @param {T} test If true, substitution will be executed.

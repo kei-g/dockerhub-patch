@@ -1,5 +1,5 @@
 import { Callback, CommunicationParameters, Minimum } from '..'
-import { bind2nd, createExecutor, substituteIf } from './misc'
+import { bind2nd, nullishCoalesce, createExecutor, substituteIf } from './misc'
 import * as https from 'https'
 
 /**
@@ -10,9 +10,9 @@ import * as https from 'https'
  * @param cb {Callback<T>} Callback function
  */
 const communicate = <T>(params: CommunicationParameters, cb: Callback<T>): void => {
-  const content = params.payload && JSON.stringify(params.payload)
+  const content = JSON.stringify(nullishCoalesce(params.payload, {}))
   const headers = {
-    'Content-length': content?.length ?? 0,
+    'Content-length': nullishCoalesce(content?.length, 0),
   } as {
     Authorization?: string,
     'Content-length': number,
@@ -23,13 +23,13 @@ const communicate = <T>(params: CommunicationParameters, cb: Callback<T>): void 
   const methods = ['GET', 'POST']
   const opts = {
     headers,
-    method: params.method || methods[+params.payload],
+    method: nullishCoalesce(params.method, methods[+params.payload]),
   } as Record<string, unknown>
   substituteIf(params.agent, opts, 'agent', params.agent)
-  const req = (params.http ?? https).request(params.url, opts, bind2nd(cb, receiveResponse))
+  const req = nullishCoalesce(params.http, https).request(params.url, opts, bind2nd(cb, receiveResponse))
   params.baker?.bake(req)
   req.on('error', bind2nd(undefined, cb))
-  if (content)
+  if (params.payload)
     req.write(content)
   req.end()
 }

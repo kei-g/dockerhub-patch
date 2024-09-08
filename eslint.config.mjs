@@ -24,7 +24,7 @@ export default [
     rules: {
       complexity: [
         'error',
-        8,
+        4,
       ],
       indent: [
         'error',

@@ -18,6 +18,11 @@ export class CookieBaker {
     return CookieBaker.theOne
   }
 
+  #handleResponse<T extends Minimum.HttpRequest>(req: T, res: Minimum.HttpResponse) {
+    if ('set-cookie' in res.headers)
+      this.cookies[req.host] = res.headers['set-cookie'].map(toCookie)
+  }
+
   /**
    * Arrays of HTTP Cookie grouped by host
    */
@@ -31,13 +36,10 @@ export class CookieBaker {
    * @return {T} The request wrapped by this manager
    */
   bake<T extends Minimum.HttpRequest>(req: T): T {
-    const cookie = this.get(req.host)?.map(stringify)?.join('; ')?.trim()
+    const cookie = this.get(req.host)?.map(stringify).join('; ').trim()
     if (cookie?.length)
       req.setHeader('Cookie', cookie)
-    req.on('response', (res: Minimum.HttpResponse) => {
-      if ('set-cookie' in res.headers)
-        this.cookies[req.host] = res.headers['set-cookie'].map(toCookie)
-    })
+    req.on('response', this.#handleResponse.bind(this, req))
     return req
   }
 

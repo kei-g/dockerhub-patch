@@ -4,7 +4,7 @@
     "name": "kei-g"
   },
   "bin": {
-    "dockerhub-patch": "dist/bin/patch.js"
+    "dockerhub-patch": "dist/index.js"
   },
   "bug": {
     "url": "https://github.com/kei-g/dockerhub-patch/issues"
@@ -41,11 +41,8 @@
   },
   "repository": "github:kei-g/dockerhub-patch",
   "scripts": {
-    "build": "run-p build:*",
-    "build:bin": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=dist/bin/patch.js --platform=node --target=node20",
-    "build:index": "esbuild src/index.ts --bundle --charset=utf8 --format=esm --minify --outfile=dist/index.js --platform=node --target=node20",
-    "build:tsc": "tsc",
-    "clean": "rimraf coverage/ index.d.ts lib/ types/",
+    "build": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=dist/index.js --platform=node --target=node20",
+    "clean": "rimraf coverage/ dist/index.js",
     "cover": "c8 --check-coverage _mocha",
     "lint": "eslint src/**/*.ts",
     "prebuild": "run-s lint",
@@ -54,6 +51,5 @@
     "start": "node --require esbuild-register src/bin/patch.ts",
     "test": "run-p cover lint"
   },
-  "types": "index.d.ts",
   "version": "1.0.0"
 }

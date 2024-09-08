@@ -32,5 +32,5 @@ outputs:
     description: >
       The response returned from DockerHub.
 runs:
-  main: dist/bin/patch.js
+  main: dist/index.js
   using: node20

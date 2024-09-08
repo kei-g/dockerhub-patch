@@ -1,6 +1,6 @@
-import { Callback, CommunicationParameters, Minimum } from '..'
-import { bind2nd, nullishCoalesce, createExecutor, substituteIf } from './misc'
 import * as https from 'https'
+import type { Callback, CommunicationParameters, Minimum } from '..'
+import { bind2nd, nullishCoalesce, createExecutor, substituteIf } from './misc'
 
 /**
  * Communicates with DockerHub

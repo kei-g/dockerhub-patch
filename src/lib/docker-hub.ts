@@ -1,4 +1,5 @@
-import { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub, communicateAsync } from '..'
+import type { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub } from '..'
+import { communicateAsync } from '..'
 import { substituteIf } from './misc'
 
 /**

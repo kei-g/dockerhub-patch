@@ -1,4 +1,4 @@
-import { Action0, DockerHub, Func, MaybeCallback, Minimum, ResponseCallback } from '..'
+import type { Action0, DockerHub, Func, MaybeCallback, Minimum, ResponseCallback } from '..'
 import { EventEmitter } from 'events'
 import { IncomingHttpHeaders } from 'http'
 import { RequestOptions } from 'https'

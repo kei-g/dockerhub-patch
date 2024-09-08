@@ -1,5 +1,6 @@
+import type { DockerHub } from '.'
 import { Agent } from 'https'
-import { CookieBaker, DockerHub, PseudoDockerhub, dockerHubAsync, loginAsync, setDescriptionAsync } from '.'
+import { CookieBaker, PseudoDockerhub, dockerHubAsync, loginAsync, setDescriptionAsync } from '.'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 

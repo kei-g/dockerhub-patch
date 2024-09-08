@@ -1,4 +1,5 @@
-import { CommonFieldsOfCookie, Cookie } from '..'
+import type { CommonFieldsOfCookie } from '..'
+import { Cookie } from '..'
 
 /**
  * Type of a function that accepts a string.

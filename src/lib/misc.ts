@@ -1,4 +1,4 @@
-import { Action1, Action2 } from '..'
+import type { Action1, Action2 } from '..'
 
 /**
  * Binds the second argument of a function.

@@ -10,7 +10,7 @@
     "url": "https://github.com/kei-g/dockerhub-patch/issues"
   },
   "dependencies": {
-    "@actions/core": "^1.11.0"
+    "@actions/core": "^1.11.1"
   },
   "description": "DockerHub Patch Action",
   "devDependencies": {

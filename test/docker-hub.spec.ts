@@ -1,8 +1,8 @@
+import assert, { equal } from 'node:assert'
 import type { DockerHub } from '.'
-import { Agent } from 'https'
+import { Agent } from 'node:https'
 import { CookieBaker, PseudoDockerhub, dockerHubAsync, loginAsync, setDescriptionAsync } from '.'
 import { describe, it } from 'mocha'
-import { expect } from 'chai'
 
 describe(
   'DockerHub',
@@ -26,7 +26,7 @@ describe(
         )
         let caught: unknown
         await promise.catch((reason: unknown) => caught = reason)
-        expect(caught).to.be.a.instanceOf(Error)
+        assert(caught instanceof Error)
       }
     )
     it(
@@ -43,7 +43,7 @@ describe(
         )
         let caught: unknown
         await promise.catch((reason: unknown) => caught = reason)
-        expect(caught).to.be.a.instanceOf(Error)
+        assert(caught instanceof Error)
       }
     )
     it(
@@ -60,7 +60,7 @@ describe(
         )
         let caught: unknown
         await promise.catch((reason: unknown) => caught = reason)
-        expect(caught).to.be.a.instanceOf(Error)
+        assert(caught instanceof Error)
       }
     )
     it(
@@ -74,7 +74,7 @@ describe(
             username: 'valid-user',
           }
         )
-        expect(login).haveOwnProperty('token')
+        assert(Object.hasOwn(login, 'token'))
         if ('token' in login)
           return new Promise(
             (resolve: (value: unknown) => void) => {
@@ -89,7 +89,7 @@ describe(
                       token: login.token,
                     }
                   )
-                  expect(response.message).to.be.a('string')
+                  equal(typeof response.message, 'string')
                   resolve(undefined)
                 },
                 100
@@ -109,11 +109,11 @@ describe(
             username: 'invalidtestuser',
           }
         )
-        expect(login).haveOwnProperty('detail')
+        assert(Object.hasOwn(login, 'detail'))
         if ('detail' in login) {
-          expect(login.detail).to.be.a('string')
-          expect(login.detail).to.be.eq('Incorrect authentication credentials')
-          expect(login.token).to.be.undefined
+          equal(typeof login.detail, 'string')
+          equal(login.detail, 'Incorrect authentication credentials')
+          equal(login.token, undefined)
         }
       }
     )
@@ -129,10 +129,10 @@ describe(
             username: 'valid-user',
           }
         )
-        expect(login).haveOwnProperty('token')
+        assert(Object.hasOwn(login, 'token'))
         if ('token' in login) {
-          expect(login.detail).to.be.undefined
-          expect(login.token).to.be.a('string')
+          equal(login.detail, undefined)
+          equal(typeof login.token, 'string')
           const image = await dockerHubAsync<DockerHub.Image>(
             'repositories/snowstep/apt-fast/',
             {
@@ -142,10 +142,10 @@ describe(
               token: login.token,
             }
           )
-          expect(image.hub_user).to.be.eq('snowstep')
-          expect(image.name).to.be.eq('apt-fast')
-          expect(image.namespace).to.be.eq('snowstep')
-          expect(image.user).to.be.eq('snowstep')
+          equal(image.hub_user, 'snowstep')
+          equal(image.name, 'apt-fast')
+          equal(image.namespace, 'snowstep')
+          equal(image.user, 'snowstep')
         }
       }
     )
@@ -161,10 +161,10 @@ describe(
             username: 'valid-user',
           }
         )
-        expect(login).haveOwnProperty('token')
+        assert(Object.hasOwn(login, 'token'))
         if ('token' in login && typeof login.token === 'string') {
-          expect(login.detail).to.be.undefined
-          expect(login.token).to.be.a('string')
+          equal(login.detail, undefined)
+          equal(typeof login.token, 'string')
           await setDescriptionAsync(
             {
               agent,
@@ -189,10 +189,10 @@ describe(
             username: 'valid-user',
           }
         )
-        expect(login).haveOwnProperty('token')
+        assert(Object.hasOwn(login, 'token'))
         if ('token' in login && typeof login.token === 'string') {
-          expect(login.detail).to.be.undefined
-          expect(login.token).to.be.a('string')
+          equal(login.detail, undefined)
+          equal(typeof login.token, 'string')
           await setDescriptionAsync(
             {
               description: 'This is a single-line description.',
@@ -216,7 +216,7 @@ describe(
             username: 'valid-user',
           }
         )
-        expect(login).haveOwnProperty('token')
+        assert(Object.hasOwn(login, 'token'))
         if ('token' in login) {
           const response = await dockerHubAsync<DockerHub.Error>(
             'namespaces/snowstep/repositories/apt-fast/images-summary',
@@ -227,7 +227,7 @@ describe(
               token: login.token,
             }
           )
-          expect(response.message).to.be.a('string')
+          equal(typeof response.message, 'string')
         }
       }
     )

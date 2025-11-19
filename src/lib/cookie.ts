@@ -156,7 +156,7 @@ export const toCookie = (s: string): Cookie => {
   const data = new Array<KeyValuePair>()
   for (const pair of s.split(';')) {
     const kv = pair.split('=')
-    const key = kv[0].trim()
+    const key = kv[0].trim().replace(/^[a-z]/, (c: string) => c.toUpperCase())
     const value = kv.slice(1).join('=')
     data.push({ key, value })
   }

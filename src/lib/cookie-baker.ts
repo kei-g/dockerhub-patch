@@ -55,7 +55,7 @@ export class CookieBaker {
     if (host in this.cookies) {
       const now = Date.now()
       const cookies = this.cookies[host].filter(
-        (c: Cookie) => now < c.common.Expires.getTime()
+        (c: Cookie) => c.common.Expires === undefined || now < c.common.Expires.getTime()
       )
       if (cookies.length)
         return this.cookies[host] = cookies

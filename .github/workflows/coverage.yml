@@ -19,7 +19,7 @@ jobs:
       - name: Test
         run: npm test
       - name: Archive code coverages report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: code-coverages-report-${{ github.event.repository.name }}-${{ matrix.node }}
           path: |

@@ -1,6 +1,6 @@
-import { CookieBaker, Minimum } from '..'
-import * as http from 'http'
-import * as https from 'https'
+import type { CookieBaker, Minimum } from '..'
+import type * as http from 'node:http'
+import type * as https from 'node:https'
 
 /**
  * Type of basic parameters for `CommunicationParameters`

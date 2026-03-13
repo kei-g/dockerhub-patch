@@ -1,5 +1,5 @@
 import type { CommonFieldsOfCookie } from '..'
-import { Cookie } from '..'
+import type { Cookie } from '..'
 
 /**
  * Type of a function that accepts a string.
@@ -153,7 +153,7 @@ const dummy = new ParsedCookie()
  */
 export const toCookie = (s: string): Cookie => {
   const cookie = new ParsedCookie()
-  const data = new Array<KeyValuePair>()
+  const data: KeyValuePair[] = []
   for (const pair of s.split(';')) {
     const kv = pair.split('=')
     const key = kv[0].trim().replace(/^[a-z]/, (c: string) => c.toUpperCase())

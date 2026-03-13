@@ -1,5 +1,5 @@
 import type { Minimum } from '..'
-import { Cookie, toCookie } from '..'
+import { type Cookie, toCookie } from '..'
 
 /**
  * HTTP Cookie Baker

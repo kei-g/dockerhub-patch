@@ -1,7 +1,7 @@
-import { Agent } from 'https'
+import { Agent } from 'node:https'
 import { CookieBaker, loginAsync, setDescriptionAsync } from '..'
 import { getInput, setFailed, setOutput, setSecret } from '@actions/core'
-import { readFileSync } from 'fs'
+import { readFileSync } from 'node:fs'
 
 const main = async <T>(): Promise<T> => {
   const description = getInput('description', { required: true })

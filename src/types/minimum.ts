@@ -1,5 +1,5 @@
-import * as http from 'http'
-import * as https from 'https'
+import type * as http from 'node:http'
+import type * as https from 'node:https'
 
 export namespace Minimum {
   export interface HttpModule {

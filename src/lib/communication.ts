@@ -1,6 +1,6 @@
-import * as https from 'https'
+import * as https from 'node:https'
 import type { Callback, CommunicationParameters, Minimum } from '..'
-import { bind2nd, nullishCoalesce, createExecutor, substituteIf } from './misc'
+import { bind2nd, nullishCoalesce, createExecutor, substituteIf } from './misc.ts'
 
 /**
  * Communicates with DockerHub

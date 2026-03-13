@@ -1,1 +1,1 @@
-export * from './pseudo-dockerhub'
+export * from './pseudo-dockerhub.ts'

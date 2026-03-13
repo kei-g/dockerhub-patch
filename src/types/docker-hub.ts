@@ -1,4 +1,4 @@
-import { BasicCommunicationParameters } from '..'
+import type { BasicCommunicationParameters } from '..'
 
 /**
  * DockerHub namespace

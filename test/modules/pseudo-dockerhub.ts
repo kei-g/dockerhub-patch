@@ -1,8 +1,8 @@
 import type { Action0, DockerHub, Func, MaybeCallback, Minimum, ResponseCallback } from '..'
-import { EventEmitter } from 'events'
-import { IncomingHttpHeaders } from 'http'
-import { RequestOptions } from 'https'
-import { isPromise } from 'util/types'
+import { EventEmitter } from 'node:events'
+import type { IncomingHttpHeaders } from 'node:http'
+import type { RequestOptions } from 'node:https'
+import { isPromise } from 'node:util/types'
 
 export class PseudoDockerhub implements Minimum.HttpModule {
   request(url: string, opts: RequestOptions, cb: ResponseCallback): Minimum.HttpRequest {
@@ -200,7 +200,7 @@ class PatchResponse extends Response<DockerHub.Description> {
     this.respond(cb, { message: `${req.overview} has been set to ${req.repo}` })
   }
 
-  constructor(chunk: unknown, request: EventEmitter, private readonly repository: string) {
+  constructor(chunk: unknown, request: EventEmitter, readonly _repository: string) {
     super(chunk, request)
     this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }

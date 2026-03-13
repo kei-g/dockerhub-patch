@@ -1,6 +1,6 @@
 import type { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub } from '..'
 import { communicateAsync } from '..'
-import { substituteIf } from './misc'
+import { substituteIf } from './misc.ts'
 
 /**
  * Send a request to DockerHub

@@ -29,6 +29,11 @@
   "license": "BSD-3-Clause",
   "main": "dist/index.js",
   "name": "@kei-g/dockerhub-patch",
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
+  },
   "private": true,
   "publishConfig": {
     "access": "restricted",

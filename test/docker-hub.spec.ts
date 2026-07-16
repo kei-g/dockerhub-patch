@@ -2,7 +2,7 @@ import assert, { equal } from 'node:assert'
 import type { DockerHub } from './index.ts'
 import { Agent } from 'node:https'
 import { CookieBaker, PseudoDockerhub, dockerHubAsync, loginAsync, setDescriptionAsync } from './index.ts'
-import { describe, it } from 'mocha'
+import { describe, it } from 'node:test'
 
 describe(
   'DockerHub',

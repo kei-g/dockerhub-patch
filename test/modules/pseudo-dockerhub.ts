@@ -200,7 +200,7 @@ class PatchResponse extends Response<DockerHub.Description> {
     this.respond(cb, { message: `${req.overview} has been set to ${req.repo}` })
   }
 
-  constructor(chunk: unknown, request: EventEmitter, readonly _repository: string) {
+  constructor(chunk: unknown, request: EventEmitter, _repository: string) {
     super(chunk, request)
     this.eventEmitter.on('--request-end', this.#handleRequestEnd.bind(this))
   }

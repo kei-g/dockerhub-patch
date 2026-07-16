@@ -1,5 +1,5 @@
-import type { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub } from '..'
-import { communicateAsync } from '..'
+import type { CommunicationParameters, CommunicationParametersWithoutURL, DockerHub } from '../index.ts'
+import { communicateAsync } from '../index.ts'
 import { substituteIf } from './misc.ts'
 
 /**

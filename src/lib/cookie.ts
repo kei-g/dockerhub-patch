@@ -40,6 +40,10 @@ abstract class CookieVisitor {
  * Concrete class to give keys and values to a cookie.
  */
 class FussyCookieVisitor extends CookieVisitor {
+  private readonly preferredMethod: Acceptor
+
+  private readonly preferredKey: string
+
   /**
    * Constructor.
    *
@@ -47,8 +51,10 @@ class FussyCookieVisitor extends CookieVisitor {
    * @param {string} preferredKey
    */
   // eslint-disable-next-line no-unused-vars
-  constructor(private readonly preferredMethod: Acceptor, private readonly preferredKey: string) {
+  constructor(preferredMethod: Acceptor, preferredKey: string) {
     super()
+    this.preferredMethod = preferredMethod
+    this.preferredKey = preferredKey
   }
 
   /**

@@ -1,5 +1,5 @@
-import type { Minimum } from '..'
-import { type Cookie, toCookie } from '..'
+import type { Minimum } from '../index.ts'
+import { type Cookie, toCookie } from '../index.ts'
 
 /**
  * HTTP Cookie Baker

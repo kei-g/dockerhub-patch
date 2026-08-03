@@ -33,4 +33,4 @@ outputs:
       The response returned from DockerHub.
 runs:
   main: dist/index.js
-  using: node20
+  using: node24

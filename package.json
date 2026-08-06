@@ -37,8 +37,8 @@
   },
   "repository": "github:kei-g/dockerhub-patch",
   "scripts": {
-    "build": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=dist/index.js --platform=node --target=node20",
-    "clean": "rimraf coverage/ dist/index.js",
+    "build": "esbuild src/bin/patch.ts --bundle --charset=utf8 --format=cjs --minify --outfile=dist/index.cjs --platform=node --target=node24",
+    "clean": "rimraf coverage/ dist/index.cjs",
     "cover": "c8 node --test",
     "lint": "biome lint --write",
     "prebuild": "npm run lint",

@@ -28,9 +28,7 @@
   "main": "dist/index.js",
   "name": "@kei-g/dockerhub-patch",
   "overrides": {
-    "c8": {
-      "yargs": "^18.0.0"
-    }
+    "brace-expansions": "^5.0.9"
   },
   "private": true,
   "publishConfig": {
